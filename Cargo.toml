@@ -1,0 +1,7 @@
+[package]
+name = "trimple-aruco-bench"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+opencv = { version = "0.93.5", features = ["aruco"] }
