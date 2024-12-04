@@ -1,17 +1,16 @@
-use std::{ffi::c_int, io::Cursor, os::raw::c_void};
+use std::{io::Cursor, os::raw::c_void};
 
 use image::{codecs::png::PngDecoder, DynamicImage};
-// use opencv::aruco::
 use opencv::{
-    core::{no_array, Mat_AUTO_STEP, Point2f, Vector, CV_8UC3, CV_8UC4},
-    imgcodecs::ImreadModes,
+    aruco::{detect_markers, get_predefined_dictionary_i32, DetectorParameters, DICT_6X6_250},
+    core::{no_array, Mat_AUTO_STEP, Point2f, Vector, CV_8UC3},
 };
 fn main() {
-    let dict = opencv::aruco::get_predefined_dictionary_i32(opencv::aruco::DICT_6X6_250).unwrap();
+    let dict = get_predefined_dictionary_i32(DICT_6X6_250).unwrap();
     let mut corners: Vector<Vector<Point2f>> = Vector::new();
     let mut rejected = no_array();
     let mut marker_ids: Vector<i32> = Vector::new();
-    let parameters = opencv::aruco::DetectorParameters::create().unwrap();
+    let parameters = DetectorParameters::create().unwrap();
     let camera_mtx = no_array();
     let camera_dst = no_array();
 
@@ -31,7 +30,7 @@ fn main() {
         .unwrap()
     };
     // let img = opencv::imgcodecs::imread("./test.png", ImreadModes::IMREAD_COLOR.into()).unwrap();
-    let detectors = opencv::aruco::detect_markers(
+    let detectors = detect_markers(
         &img,
         &dict,
         &mut corners,
