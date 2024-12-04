@@ -4,4 +4,5 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+image = "0.25.5"
 opencv = { version = "0.93.5", features = ["aruco"] }
