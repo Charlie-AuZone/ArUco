@@ -37,8 +37,6 @@ fn main() {
         &mut marker_ids,
         &parameters,
         &mut rejected,
-        &camera_mtx,
-        &camera_dst,
     );
     match detectors {
         Ok(_) => {
