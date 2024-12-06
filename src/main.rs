@@ -3,9 +3,8 @@ use std::time::Instant;
 
 use glob::glob;
 
-use image::buffer::ConvertBuffer;
-use image::GrayImage;
-use opencv::core::{MatTraitConstManual, Mat_AUTO_STEP, Point2f, Scalar, Vector, CV_8UC1};
+use image::RgbImage;
+use opencv::core::{MatTraitConstManual, Mat_AUTO_STEP, Point2f, Scalar, Vector, CV_8UC3};
 use opencv::objdetect::{
     draw_detected_markers, get_predefined_dictionary_i32, ArucoDetector, DetectorParameters,
     RefineParameters, DICT_4X4_50,
@@ -21,9 +20,9 @@ fn main() {
     detect_param.set_adaptive_thresh_win_size_max(5);
     detect_param.set_min_marker_perimeter_rate(0.01);
 
-    detect_param.set_min_marker_distance_rate(0.3);
+    detect_param.set_min_marker_distance_rate(0.15);
     detect_param.set_min_corner_distance_rate(0.15);
-    detect_param.set_min_marker_length_ratio_original_img(0.1);
+    detect_param.set_min_marker_length_ratio_original_img(0.01);
     detect_param.set_perspective_remove_ignored_margin_per_cell(0.33);
     detect_param.set_min_side_length_canonical_img(32);
     let refine_param = RefineParameters::new_def().unwrap();
@@ -42,14 +41,13 @@ fn main() {
             .decode()
             .unwrap();
         let img = img.to_rgb8();
-        let img: GrayImage = img.convert();
         let mut data = img.to_vec();
         let start = Instant::now();
         let mut img_mat = unsafe {
             opencv::prelude::Mat::new_rows_cols_with_data_unsafe(
                 img.height() as i32,
                 img.width() as i32,
-                CV_8UC1,
+                CV_8UC3,
                 data.as_mut_ptr() as *mut c_void,
                 Mat_AUTO_STEP,
             )
@@ -78,7 +76,7 @@ fn main() {
         )
         .unwrap();
         let output = img_mat.data_bytes().unwrap().to_vec();
-        let img = GrayImage::from_raw(img.width(), img.height(), output).unwrap();
+        let img = RgbImage::from_raw(img.width(), img.height(), output).unwrap();
         let newname = format!(
             "found/{}.png",
             file.with_extension("").as_os_str().to_string_lossy()
