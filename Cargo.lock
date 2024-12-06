@@ -974,9 +974,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "trimple-aruco-bench"
+name = "trimble-aruco-bench"
 version = "0.1.0"
 dependencies = [
+ "glob",
  "image",
  "opencv",
 ]
